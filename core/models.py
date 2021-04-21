@@ -29,7 +29,7 @@ class Book(models.Model):
         verbose_name = "Book"
         verbose_name_plural = "Books"
 
-class Moviments(models.Model):
+class BookReservations(models.Model):
     id_moviment = models.AutoField(primary_key=True)
     id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
     id_client = models.ForeignKey(Client, on_delete=models.CASCADE)
