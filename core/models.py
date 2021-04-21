@@ -30,15 +30,15 @@ class Book(models.Model):
         verbose_name_plural = "Books"
 
 class BookReservations(models.Model):
-    id_moviment = models.AutoField(primary_key=True)
+    id_reservation = models.AutoField(primary_key=True)
     id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
     id_client = models.ForeignKey(Client, on_delete=models.CASCADE)
-    date_lent = models.TimeField(null=True, blank=True)
-    date_returned = models.TimeField(null=True, blank=True)
+    date_lent = models.DateField(null=True, blank=True)
+    date_returned = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return self.id        
+        return self.id_reservation
     
     class Meta:
-        verbose_name = "Moviment"
-        verbose_name_plural = "Moviments"
+        verbose_name = "Reservation"
+        verbose_name_plural = "Reservations"
