@@ -31,7 +31,7 @@ class Book(models.Model):
 
 class Moviments(models.Model):
     id_moviment = models.AutoField(primary_key=True)
-    id_book = models.ForeignKey(Client, on_delete=models.CASCADE)
+    id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
     reserved_for = models.ForeignKey(Client, on_delete=models.CASCADE)
     borrowed_for = models.ForeignKey(Client, on_delete=models.CASCADE)
     date_reserved = models.DateField(null=True, blank=True)
