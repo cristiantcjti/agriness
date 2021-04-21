@@ -7,7 +7,7 @@ from datetime import date
 
 class Client(models.Model):    
     id_client = models.AutoField(primary_key=True) 
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=70)
     cpf = models.CharField(max_length=11)
 
     def __str__(self):
@@ -32,11 +32,9 @@ class Book(models.Model):
 class Moviments(models.Model):
     id_moviment = models.AutoField(primary_key=True)
     id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    reserved_for = models.ForeignKey(Client, on_delete=models.CASCADE)
-    borrowed_for = models.ForeignKey(Client, on_delete=models.CASCADE)
-    date_reserved = models.DateField(null=True, blank=True)
-    dete_lent = models.TimeField(null=True, blank=True)
-    dete_returned = models.TimeField(null=True, blank=True)
+    id_client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    date_lent = models.TimeField(null=True, blank=True)
+    date_returned = models.TimeField(null=True, blank=True)
 
     def __str__(self):
         return self.id        
