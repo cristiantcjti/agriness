@@ -20,4 +20,5 @@ from core import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('client/<int:id_client>/books', views.client_reserved_books),
+    path('books', views.books_list),
 ]
