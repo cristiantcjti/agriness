@@ -30,10 +30,14 @@ def client_reserved_books(request, id_client):
         for info in reserve_info:  
             book_information = [] 
             title = Book.objects.get(id_book=info[0])
-            date = info[1]
-            book_information.append(title.title)
-            book_information.append(date)
+            date_lent = info[1]
+            date_returned = info[2]
+#            book_information.append(title.title)
+#            book_information.append(date)
+            book_information = {'Book': title.title, 'Date lent': date_lent, 'Date returned': date_returned, 'Additional charge': ''}
+#            reservation_list.append(book_information)
             reservation_list.append(book_information)
+
     except Book.DoesNotExist: 
         return JsonResponse({'message': 'There is no book to the client.'}, status=status.HTTP_404_NOT_FOUND) 
     
