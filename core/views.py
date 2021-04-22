@@ -99,11 +99,10 @@ def format_date(date):
 def check_date(date_lent):
     today = datetime.now()
     days_borrowed = today.day - date_lent.day   
-    days = [0,1,2,3,4,5,6]
     list_of_charges = [[0,0], [0,0], [0,0], [3,0.2], [5,0.4], [5,0.4], [7,0.6]]
     max_count = len(list_of_charges)
     for i in range(0,max_count):
-        if days_borrowed == days[i] or i > 5 :
+        if days_borrowed == i or i > 5 :
             penalty = list_of_charges[i][0]
             interest = list_of_charges[i][1]
             return {'days_overdue':days_borrowed, 'penalty':f'{penalty}%', 'interest_per_day':f'{interest}%'}
