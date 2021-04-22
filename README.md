@@ -6,7 +6,7 @@
     <li>Ambiente de desenvolvimento</li>
 </ol>
 
-# Instalação
+<h2>Instalação</h2>
 
 Versão do Python 3.9.2
 
@@ -32,12 +32,14 @@ Em seguida, instale os requirements:
 Rode as migrations:
 > python manage.py migrate
 
+
+
 # Ambiente de desenvolvimento
 
 Para rodar o projeto:
 > python manage.py runserver  
 
-Agora vc pode acessar as rotas localmente
+Agora vc pode acessar as rotas localmente pelo browser e criar uma reserva por algum aplicativo de serviços de API como o postman por exemplo.
 
 E para acessar o admin, não pare o servidor, em outro terminal, ative a maquina virtual e rode o comando:
 >
