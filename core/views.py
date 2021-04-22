@@ -1,12 +1,14 @@
+from .models import Client, Book, BookReservations
+from django.views.decorators.csrf import csrf_exempt
+from datetime import date
 from django.db.utils import IntegrityError
 from django.forms.models import model_to_dict
 from django.http import HttpResponse, JsonResponse 
 from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
-from .models import Client, Book, BookReservations
+from django.core import serializers
 import json
-from datetime import date
+
 
 # Create your views here.
 
@@ -38,6 +40,18 @@ def client_reserved_books(request, id_client):
 
     return JsonResponse(reservation_list, safe=False)
 
+@csrf_exempt
+@require_http_methods(["GET"]) 
+def books_list(request):
+    try:    
+        books = Book.objects.all()
+        print('Print book', books)
+        books = serializers.serialize("json", books)
+        print('Print book', books)
+    except Book.DoesNotExist:
+        return JsonResponse({'message': 'There is no registered book.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    return JsonResponse(books, safe=False)
 
 def format_date(date):
     if date == None:
