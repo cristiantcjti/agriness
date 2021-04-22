@@ -20,8 +20,7 @@ class Client(models.Model):
 class Book(models.Model):
     id_book = models.AutoField(primary_key=True)
     title = models.CharField(max_length=50)
-    status = models.CharField(max_length=15)
-
+    status = models.CharField(max_length=15, default='disponível')
     def __str__(self):
         return self.title        
     
@@ -37,7 +36,7 @@ class BookReservations(models.Model):
     date_returned = models.DateField(null=True, blank=True)
 
     def __str__(self):
-        return self.id_reservation
+        return str(self.id_reservation)
     
     class Meta:
         verbose_name = "Reservation"
