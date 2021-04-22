@@ -19,34 +19,27 @@ def client_reserved_books(request, id_client):
         for reservation in reservations:
             info = []
             info.append(reservation['id_book_id'])
-            info.append(check_date(reservation['date_lent']))
-            info.append(check_date(reservation['date_returned']))
+            info.append(format_date(reservation['date_lent']))
+            info.append(format_date(reservation['date_returned']))
             reserve_info.append(info) 
     except BookReservations.DoesNotExist: 
         return JsonResponse({'message': 'There is no reservation to the client.'}, status=status.HTTP_404_NOT_FOUND) 
     try:   
         reservation_list = []
-        print('size...:', len(reserve_info)) 
         for info in reserve_info:  
-            book_information = [] 
             title = Book.objects.get(id_book=info[0])
             date_lent = info[1]
             date_returned = info[2]
-#            book_information.append(title.title)
-#            book_information.append(date)
             book_information = {'Book': title.title, 'Date lent': date_lent, 'Date returned': date_returned, 'Additional charge': ''}
-#            reservation_list.append(book_information)
             reservation_list.append(book_information)
 
     except Book.DoesNotExist: 
         return JsonResponse({'message': 'There is no book to the client.'}, status=status.HTTP_404_NOT_FOUND) 
-    
-    if request.method == "GET":
-        return JsonResponse(reservation_list, safe=False)
-    else:
-        return HttpResponse("POST")
 
-def check_date(date):
+    return JsonResponse(reservation_list, safe=False)
+
+
+def format_date(date):
     if date == None:
         return '' 
     else:
