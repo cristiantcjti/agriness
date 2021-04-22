@@ -10,7 +10,7 @@
 
 Versão do Python 3.9.2
 
-Para criar o ambiente virtual Python, entre na pasta `server` e digite:
+Para criar o ambiente virtual Python digite:
 
 > python -m venv venv
 
