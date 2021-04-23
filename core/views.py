@@ -7,7 +7,6 @@ from django.core import serializers
 import json
 import logging
 
-
 # Create your views here.
 
 #CLIENT'S RESERVATION
@@ -81,12 +80,17 @@ def books_reserve(request, id_book):
 @require_http_methods(["GET"]) 
 def books_list(request):
     try:    
+        response = []
         books = Book.objects.all()
-        books = serializers.serialize("json", books)
+        for index in range(len(books)): 
+            title = books[index].title
+            status = books[index].status
+            json_to_return = {"title":title,"status":status}
+            response.append(json_to_return)
     except Book.DoesNotExist:
         return JsonResponse({'message': 'There is no registered book.'}, status=status.HTTP_404_NOT_FOUND)
 
-    return HttpResponse(books, content_type='application/json')
+    return JsonResponse(response, safe=False, status=200)
 
 #FORMAT A PASSED DATE
 def format_date(date):
@@ -101,7 +105,7 @@ def check_date(date_lent):
     days_borrowed = today.day - date_lent.day   
     list_of_charges = [[0,0], [0,0], [0,0], [3,0.2], [5,0.4], [5,0.4], [7,0.6]]
     max_count = len(list_of_charges)
-    for i in range(0,max_count):
+    for i in range(max_count):
         if days_borrowed == i or i > 5 :
             penalty = list_of_charges[i][0]
             interest = list_of_charges[i][1]
