@@ -32,6 +32,7 @@ class BookReservations(models.Model):
     id_reservation = models.AutoField(primary_key=True)
     id_book = models.ForeignKey(Book, on_delete=models.CASCADE)
     id_client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    value = models.FloatField(null=True)
     date_lent = models.DateField(null=True, blank=True)
     date_returned = models.DateField(null=True, blank=True)
 

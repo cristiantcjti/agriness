@@ -18,9 +18,10 @@ def client_reserved_books(request, id_client):
         reservations = BookReservations.objects.filter(id_client=id_client).values()
         for reservation in reservations:
             info = []
-            info.append(reservation['id_book_id'])
+            info.append(reservation['id_book_id'])          
             info.append(reservation['date_lent'])
             info.append(reservation['date_returned'])
+            info.append(reservation['value'])
             reserve_info.append(info) 
     except BookReservations.DoesNotExist: 
         return JsonResponse({'message':'There is no reservation to the client.'}, status=status.HTTP_404_NOT_FOUND) 
@@ -31,7 +32,8 @@ def client_reserved_books(request, id_client):
             title = Book.objects.get(id_book=information[0])
             date_lent = information[1]
             date_returned = format_date(information[2])
-            book_information = {'book':title.title, 'date_lent':date_lent, 'date_returned':date_returned, 'additional_charge':check_date(date_lent)}
+            value = information[3]
+            book_information = {'book':title.title, 'date_lent':date_lent, 'date_returned':date_returned, 'additional_charge':check_date(date_lent, value)}
             reservation_list.append(book_information)
     except Book.DoesNotExist: 
         return JsonResponse({'message':'There is no book found.'}, status=status.HTTP_404_NOT_FOUND) 
@@ -56,7 +58,7 @@ def books_reserve(request, id_book):
         return JsonResponse({'message':'There is no registered client with the passed id.'}, status=500) 
     
     if book.status == 'disponível':
-        reserve = BookReservations(id_book=book, id_client=client, date_lent=data['date_lent'])
+        reserve = BookReservations(id_book=book, id_client=client, value=data['value'],date_lent=data['date_lent'])
         book.status = 'emprestado'
     else:
         return JsonResponse({'message':'book is already reserved.'}, safe=False)
@@ -100,15 +102,34 @@ def format_date(date):
         return date.strftime('%Y-%m-%d')
 
 #CHECK PERIOD
-def check_date(date_lent):
+def check_date(date_lent, value):
+    date_lent = datetime.combine(date_lent, datetime.min.time())
     today = datetime.now()
-    days_borrowed = today.day - date_lent.day   
-    list_of_charges = [[0,0], [0,0], [0,0], [3,0.2], [5,0.4], [5,0.4], [7,0.6]]
-    max_count = len(list_of_charges)
-    for i in range(max_count):
-        if days_borrowed == i or i > 5 :
-            penalty = list_of_charges[i][0]
-            interest = list_of_charges[i][1]
-            return {'days_overdue':days_borrowed, 'penalty':f'{penalty}%', 'interest_per_day':f'{interest}%'}
+    days_borrowed = (today - date_lent).days
+    list_of_penalties = [0, 0, 0,   3,   4,   5,   7]
+    list_of_interest =  [0, 0, 0, 0.2, 0.4, 0.4, 0.6]
+    max_penalty = len(list_of_penalties)-1
+    index = 0
+    while index <= days_borrowed:
+        if days_borrowed == index and index <= max_penalty:
+            penalty = list_of_penalties[index]
+            interest = list_of_interest[index]
+            response = math_fine(days_borrowed, penalty, interest, value)
+        elif index > max_penalty:
+            penalty = list_of_penalties[max_penalty]
+            interest = list_of_interest[max_penalty]
+            response = math_fine(days_borrowed, penalty, interest, value)
+            break
+        index += 1
+
+    return response
+
+#MATH FINE'S VALUE
+def math_fine(days_borrowed, penalty, interest, value):
+    value *= 1+(penalty/100)
+    for index in range(days_borrowed):
+        value *= 1+(interest/100)
+    return {'days_overdue':days_borrowed, 'penalty':f'{penalty}%', 'interest_per_day':f'{interest}%', 'value_to_charge':'R${:.2f}'.format(value)} 
+
 
 
